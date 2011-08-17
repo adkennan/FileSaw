@@ -37,10 +37,10 @@ namespace FileSaw
 	/// <summary>
 	/// An <see cref="IRecordReader"/> implementation that reads records of fixed length fields.
 	/// </summary>
-	public class FixedRecordReader : IRecordReader
+	public sealed class FixedRecordReader : IRecordReader
 	{
-		private string _recordDelimiter;
-		private int _lastLineLength;
+		private readonly string _recordDelimiter;
+		private readonly StringBuilder _lineBuilder = new StringBuilder();
 		
 		/// <summary>
 		/// An <see cref="IRecordReader"/> implementation that reads records of fixed length fields.
@@ -64,24 +64,21 @@ namespace FileSaw
 				return false;
 			}
 			
-			var lineBuilder = _lastLineLength == 0 ? new StringBuilder() : new StringBuilder(_lastLineLength * 2);
-			int current = textReader.Read();
-			int next = textReader.Peek();
+			_lineBuilder.Clear();
+			var current = textReader.Read();
 			
 			while( current > -1 )
 			{
-				lineBuilder.Append((char)current);
-				if( lineBuilder.EndsWith(_recordDelimiter) ) {
-					lineBuilder.Length -= _recordDelimiter.Length;
+				_lineBuilder.Append((char)current);
+				if( _lineBuilder.EndsWith(_recordDelimiter) ) {
+					_lineBuilder.Length -= _recordDelimiter.Length;
 					break;
 				}
 		
 				current = textReader.Read();
-				next = textReader.Peek();
 			}
 			
-			line = lineBuilder.ToString();
-			_lastLineLength = line.Length;
+			line = _lineBuilder.ToString();
 			return true;
 		}
 		
@@ -104,12 +101,11 @@ namespace FileSaw
 		/// <summary>
 		/// Constructs a new RecordSpec instance.
 		/// </summary>
-		/// <param name="parser">The parser using this instance to extract data.</param>
 		/// <param name="name">The name of the record.</param>
 		/// <returns>A new RecordSpec.</returns>
-		public RecordSpec CreateRecordSpec(Parser parser, string name)
+		public RecordSpec CreateRecordSpec(string name)
 		{
-			return new FixedRecordSpec(parser, name);
+			return new FixedRecordSpec(name);
 		}
 	}
 }

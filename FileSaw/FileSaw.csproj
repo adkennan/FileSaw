@@ -59,12 +59,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BasicDelimitedParseStrategy.cs" />
+    <Compile Include="DefaultRecordFactory.cs" />
     <Compile Include="DelimitedRecordReader.cs" />
     <Compile Include="FieldSpec.cs" />
     <Compile Include="FixedFieldSpec.cs" />
     <Compile Include="FixedRecordReader.cs" />
     <Compile Include="FixedRecordSpec.cs" />
     <Compile Include="IDelimitedParseStrategy.cs" />
+    <Compile Include="IRecordFactory.cs" />
     <Compile Include="IRecordReader.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="ParserContext.cs" />
@@ -72,6 +74,7 @@
     <Compile Include="QuotedStringParseStrategy.cs" />
     <Compile Include="Record.cs" />
     <Compile Include="RecordSpec.cs" />
+    <Compile Include="ReusableRecordFactory.cs" />
     <Compile Include="StringBuilderExtensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />

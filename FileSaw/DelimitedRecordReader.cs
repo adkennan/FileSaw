@@ -41,9 +41,9 @@ namespace FileSaw
 	{
 		private readonly string _fieldDelimiter;
 		private readonly string _recordDelimiter;
-		private readonly IDelimitedParseStrategy	_parseStrategy;
-		private int _lastLineLength; 
-	
+		private readonly IDelimitedParseStrategy _parseStrategy;
+		private readonly StringBuilder _lineBuilder = new StringBuilder();
+		
 		/// <summary>
 		/// An <see cref="IRecordReader"/> implementation that reads delimited formats such as CSV.
 		/// </summary>
@@ -72,17 +72,20 @@ namespace FileSaw
 		
 			_parseStrategy.Reset();
 			
-			var lineBuilder = _lastLineLength == 0 ? new StringBuilder() : new StringBuilder(_lastLineLength * 2);
+			_lineBuilder.Clear();
 			int current = textReader.Read();
 			int next = textReader.Peek();
 			
 			while( current > -1 )
 			{
-				if( _parseStrategy.IncludeChar((char)current, next >= 0 ? (char)next : default(char?)) )
+				char currentChar = (char)current;
+				char? nextChar = next >= 0 ? (char)next : default(char?);
+				
+				if( _parseStrategy.IncludeChar(currentChar, nextChar) )
 				{
-					lineBuilder.Append((char)current);
-					if( ! _parseStrategy.Escaped && lineBuilder.EndsWith(_recordDelimiter) ) {
-						lineBuilder.Length -= _recordDelimiter.Length;
+					_lineBuilder.Append(currentChar);
+					if( ! _parseStrategy.Escaped && _lineBuilder.EndsWith(_recordDelimiter) ) {
+						_lineBuilder.Length -= _recordDelimiter.Length;
 						break;
 					}
 				}
@@ -91,8 +94,7 @@ namespace FileSaw
 				next = textReader.Peek();
 			}
 			
-			line = lineBuilder.ToString();
-			_lastLineLength = line.Length;
+			line = _lineBuilder.ToString();
 			return true;
 		}
 		
@@ -128,12 +130,11 @@ namespace FileSaw
 		/// <summary>
 		/// Constructs a new RecordSpec instance.
 		/// </summary>
-		/// <param name="parser">The parser using this instance to extract data.</param>
 		/// <param name="name">The name of the record.</param>
 		/// <returns>A new RecordSpec.</returns>
-		public RecordSpec CreateRecordSpec(Parser parser, string name)
+		public RecordSpec CreateRecordSpec(string name)
 		{
-			return new RecordSpec(parser, name);
+			return new RecordSpec(name);
 		}
 	}
 }

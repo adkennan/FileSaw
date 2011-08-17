@@ -35,15 +35,14 @@ namespace FileSaw
 	/// <summary>
 	/// Describes a fixed length record.
 	/// </summary>
-	public class FixedRecordSpec : RecordSpec
+	public sealed class FixedRecordSpec : RecordSpec
 	{
 		/// <summary>
 		/// Describes a fixed length record.
 		/// </summary>
-		/// <param name="parser">The parser.</param>
 		/// <param name="name">The name of the record.</param>
-		public FixedRecordSpec(Parser parser, string name)
-			: base(parser, name)
+		public FixedRecordSpec(string name)
+			: base(name)
 		{
 		}
 		

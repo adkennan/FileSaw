@@ -49,10 +49,10 @@ namespace FileSaw
 		/// <summary>
 		/// Indicates whether a character should be included in the extracted data.
 		/// </summary>
-		/// <param name="charToInclude">The character to check for inclusion.</param>
-		/// <param name="nextChar">The next in the text stream.</param>
-		/// <returns>True if the <paramref name="charToInclude"/> should be included in the extracted data.</returns>
-		bool IncludeChar(char charToInclude, char? nextChar);
+		/// <param name="valueToInclude">The character to check for inclusion.</param>
+		/// <param name="nextValue">The next character in the text stream.</param>
+		/// <returns>True if the <paramref name="valueToInclude"/> should be included in the extracted data.</returns>
+		bool IncludeChar(char valueToInclude, char? nextValue);
 			
 	}
 }

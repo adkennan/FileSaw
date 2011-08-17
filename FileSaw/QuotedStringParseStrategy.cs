@@ -32,21 +32,34 @@ using System;
 namespace FileSaw
 {
 	/// <summary>
-	/// Description of QuotedStringParseStrategy.
+	/// A parse strategy that handles quoted strings in delimited text files.
 	/// </summary>
 	public class QuotedStringParseStrategy : IDelimitedParseStrategy
 	{
 		private bool _excludeNext;
 			
+		/// <summary>
+		/// Gets a value indicating whether any field or record delimiters encountered
+		/// are part of the data.
+		/// </summary>
 		public bool Escaped { get; private set; }
 		
+		/// <summary>
+		/// Resets the parse strategy.
+		/// </summary>
 		public void Reset()
 		{
 			_excludeNext = false;
 			Escaped = false;
 		}
 		
-		public bool IncludeChar(char charToCheck, char? nextChar)
+		/// <summary>
+		/// Indicates whether a character should be included in the extracted data.
+		/// </summary>
+		/// <param name="valueToInclude">The character to check for inclusion.</param>
+		/// <param name="nextValue">The next character in the text stream.</param>
+		/// <returns>True if the <paramref name="valueToInclude"/> should be included in the extracted data.</returns>
+		public bool IncludeChar(char valueToInclude, char? nextValue)
 		{
 			if( _excludeNext )
 			{
@@ -55,8 +68,8 @@ namespace FileSaw
 			}
 			
 			if( Escaped ) {
-				if( charToCheck == '"' ) {
-					if( nextChar != null & nextChar == '"' ) {
+				if( valueToInclude == '"' ) {
+					if( nextValue != null & nextValue == '"' ) {
 						_excludeNext = true;
 						return true;
 					}
@@ -66,7 +79,7 @@ namespace FileSaw
 						return false;
 					}
 				}
-			} else if( charToCheck == '"' ) {
+			} else if( valueToInclude == '"' ) {
 				Escaped = true;
 				return false;
 			}

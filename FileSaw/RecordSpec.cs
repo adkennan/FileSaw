@@ -43,11 +43,9 @@ namespace FileSaw
 		private Predicate<ParserContext> _where;
 		private Predicate<ParserContext> _requiring;
 		private FieldSpec _currentField;
-		private readonly Parser _parser;
 		
-		internal RecordSpec(Parser parser, string name)
+		internal RecordSpec(string name)
 		{
-			_parser = parser;
 			_name = name;
 		}
 		
@@ -83,8 +81,12 @@ namespace FileSaw
 			return _requiring(context);
 		}
 		
-		internal Parser Parser { get { return _parser; } }
-		
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="binder"></param>
+		/// <param name="result"></param>
+		/// <returns></returns>
 		public override bool TryGetMember(GetMemberBinder binder, out object result)
 		{
 			var fieldSpec = _fields.Find(fs => fs.Name == binder.Name);
@@ -100,11 +102,23 @@ namespace FileSaw
 			return true;
 		}
 		
+		/// <summary>
+		/// Creates a new FieldSpec. 
+		/// Override this in derived classes to provide specialized FieldSpecs.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <returns></returns>
 		protected virtual FieldSpec CreateFieldSpec(string name)
 		{
 			return new FieldSpec(name);
 		}
 		
+		/// <summary>
+		/// Sets a predicate used to identify the type of a record.
+		/// </summary>
+		/// <param name="predicate">The function called to identify a record. 
+		/// Returns true if the record is a match.</param>
+		/// <returns></returns>
 		public dynamic Where(Predicate<ParserContext> predicate)
 		{
 			if( _where != null ) {
@@ -115,6 +129,13 @@ namespace FileSaw
 			return this;
 		}
 		
+		/// <summary>
+		/// Sets a predicate used to validate a record after it has been parsed.
+		/// </summary>
+		/// <param name="predicate">The function called to identify a record.
+		/// Returns true if the record is valid.
+		/// </param>
+		/// <returns></returns>
 		public dynamic Requiring(Predicate<ParserContext> predicate)
 		{
 			if( _requiring != null ) {
@@ -125,6 +146,10 @@ namespace FileSaw
 			return this;
 		}
 		
+		/// <summary>
+		/// Sets the type of a field in the record. 
+		/// </summary>
+		/// <returns></returns>
 		public dynamic As<T>() where T : IConvertible
 		{
 			if( _currentField == null ) {
@@ -134,6 +159,12 @@ namespace FileSaw
 			return this;
 		}
 		
+		/// <summary>
+		/// Sets the type of a field in the record. 
+		/// </summary>
+		/// <param name="convert">A conversion function used to convert the string read from 
+		/// the text stream into the correct type.</param>
+		/// <returns></returns>
 		public dynamic As<T>(Func<string, T> convert)
 		{
 			if( _currentField == null ) {
@@ -143,6 +174,9 @@ namespace FileSaw
 			return this;
 		}
 		
+		/// <summary>
+		/// Gets the field that is currently being defined.
+		/// </summary>
 		protected FieldSpec CurrentField { get { return _currentField; } } 
 	}
 }

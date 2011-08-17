@@ -28,43 +28,25 @@
  * or implied, of Andrew Kennan.
  */
 using System;
-using System.Collections.Generic;
 
 namespace FileSaw
 {
 	/// <summary>
-	/// Stores the current state of the parser.
+	/// A record factory that uses the same record object for each read.
 	/// </summary>
-	public class ParserContext
+	public sealed class ReusableRecordFactory : IRecordFactory
 	{
-		/// <summary>
-		/// Gets the parser this context belongs to.
-		/// </summary>
-		public Parser Parser { get; internal set; }
+		private readonly Record _record = new Record();
 		
 		/// <summary>
-		/// Gets a value indicating whether this is the first record in the file.
+		/// Creates a new record.
 		/// </summary>
-		public bool FirstRecord { get; internal set; }
-		
-		/// <summary>
-		/// Gets a value indicating whether this is the last record in the file.
-		/// </summary>
-		public bool LastRecord { get; internal set; }
-		
-		/// <summary>
-		/// Gets the original text of the current record.
-		/// </summary>
-		public string LineValue { get; internal set; }
-		
-		/// <summary>
-		/// Gets the definition of the current record.
-		/// </summary>
-		public RecordSpec RecordSpec { get; internal set; }
-		
-		/// <summary>
-		/// Gets the current record.
-		/// </summary>
-		public Record Current { get; internal set; }
+		/// <param name="context">The current parser context</param>
+		/// <returns></returns>
+		public Record CreateRecord(ParserContext context)
+		{
+			_record.Initialize(context);
+			return _record;
+		}
 	}
 }

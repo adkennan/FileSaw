@@ -1,0 +1,8 @@
+﻿
+FileSaw - A dynamic parser of structured text files for .Net 4.
+===============================================================
+
+Copyright 2011 Andrew Kennan. All rights reserved.
+
+FileSaw uses the dynamic features of .Net 4 to provide a simple fluent interface for defining records in structured text files. It can parse both delimited files, such as CSV, or records with fixed length fields.
+

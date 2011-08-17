@@ -50,8 +50,14 @@ namespace FileSaw
 			_values.Clear();
 		}
 		
+		/// <summary>
+		/// Gets a value indicating whether this is the first record in the set.
+		/// </summary>
 		public bool FirstRecord { get { return _context.FirstRecord; } }
 		
+		/// <summary>
+		/// Gets a value indicating whether this is the last record in the set.
+		/// </summary>
 		public bool LastRecord { get { return _context.LastRecord; } }
 		
 		internal void Add(object value)
@@ -77,14 +83,14 @@ namespace FileSaw
 		{
 			result = null;
 			
-			if( binder.Name.StartsWith("Is") )
+			if( binder.Name.StartsWith("Is", StringComparison.Ordinal) )
 			{
 				if( binder.Name == "Is" + _context.RecordSpec.RecordName ) {
 					result = true;
 					return true;
 				}
 				
-				if( _context.RecordSpec.Parser.HasRecordNamed(binder.Name.Substring(2))) {
+				if( _context.Parser.HasRecordNamed(binder.Name.Substring(2))) {
 					result = false;
 					return true;
 				}

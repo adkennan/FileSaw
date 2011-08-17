@@ -57,9 +57,8 @@ namespace FileSaw
 		/// <summary>
 		/// Constructs a new RecordSpec instance.
 		/// </summary>
-		/// <param name="parser">The parser using this instance to extract data.</param>
 		/// <param name="name">The name of the record.</param>
 		/// <returns>A new RecordSpec.</returns>
-		RecordSpec CreateRecordSpec(Parser parser, string name);
+		RecordSpec CreateRecordSpec(string name);
 	}
 }

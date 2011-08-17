@@ -35,7 +35,7 @@ namespace FileSaw
 	/// A parser strategy for the <see cref="DelimitedRecordReader" /> that
 	/// performs no escaping.
 	/// </summary>
-	public class BasicDelimitedParseStrategy : IDelimitedParseStrategy
+	public sealed class BasicDelimitedParseStrategy : IDelimitedParseStrategy
 	{
 		/// <summary>
 		/// Gets a value indicating whether the current character is escaped.
@@ -52,10 +52,10 @@ namespace FileSaw
 		/// <summary>
 		/// Indicates whether a character should be included in the extracted data.
 		/// </summary>
-		/// <param name="charToInclude">The character to check for inclusion.</param>
-		/// <param name="nextChar">The next in the text stream.</param>
-		/// <returns>True if the <paramref name="charToInclude"/> should be included in the extracted data.</returns>
-		public bool IncludeChar(char charToInclude, Nullable<char> nextChar)
+		/// <param name="valueToInclude">The character to check for inclusion.</param>
+		/// <param name="nextValue">The next character in the text stream.</param>
+		/// <returns>True if the <paramref name="valueToInclude"/> should be included in the extracted data.</returns>
+		public bool IncludeChar(char valueToInclude, char? nextValue)
 		{
 			return true;
 		}

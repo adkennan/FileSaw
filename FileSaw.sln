@@ -4,6 +4,11 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # SharpDevelop 4.1.0.7794-beta
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileSaw", "FileSaw\FileSaw.csproj", "{F9A1C450-4DED-44B5-94F1-14CE7D6C545D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{AA7357F4-105A-428D-B756-DBCC01521CBD}"
+	ProjectSection(SolutionItems) = postProject
+		README = README
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86

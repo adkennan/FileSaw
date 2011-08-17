@@ -42,6 +42,7 @@ namespace FileSaw
 	{
 		private readonly List<RecordSpec> _records = new List<RecordSpec>();
 		private readonly IRecordReader _recordReader;
+		private IRecordFactory _recordFactory = new DefaultRecordFactory();
 		
 		/// <summary>
 		/// A dynamic text parser.
@@ -49,6 +50,18 @@ namespace FileSaw
 		public Parser(IRecordReader recordReader)
 		{
 			_recordReader = recordReader;
+		}
+		
+		/// <summary>
+		/// Sets the record factory used by this parser.
+		/// </summary>
+		/// <param name="recordFactory"></param>
+		public void SetRecordFactory(IRecordFactory recordFactory)
+		{
+			if( recordFactory == null ) {
+				throw new ArgumentNullException("recordFactory");
+			}
+			_recordFactory = recordFactory;
 		}
 		
 		/// <summary>
@@ -67,7 +80,7 @@ namespace FileSaw
 				throw new InvalidOperationException("A record named [" + binder.Name + "] has already been described.");
 			}
 			
-			recordSpec = _recordReader.CreateRecordSpec(this, binder.Name);
+			recordSpec = _recordReader.CreateRecordSpec(binder.Name);
 			_records.Add(recordSpec);
 			result = recordSpec;
 			return true;
@@ -111,8 +124,8 @@ namespace FileSaw
 		{
 			var context = new ParserContext 
 			{ 
-				FirstRecord = true,
-				Current = new Record()
+				Parser = this,
+				FirstRecord = true
 			};
 			
 			var currentLine = ReadLine(reader);
@@ -123,7 +136,7 @@ namespace FileSaw
 				context.LineValue = currentLine;
 				context.LastRecord = nextLine == null;
 				context.RecordSpec = FindRecordSpec(context);
-				context.Current.Initialize(context);
+				context.Current = _recordFactory.CreateRecord(context);
 				
 				ParseRecord(context);
 				
@@ -138,61 +151,123 @@ namespace FileSaw
 			}
 		}
 		
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns></returns>
 		public static dynamic CsvWithQuotedStrings()
 		{
 			return CsvWithQuotedStrings(Environment.NewLine);
 		}
 		
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="newLine"></param>
+		/// <returns></returns>
 		public static dynamic CsvWithQuotedStrings(string newLine)
 		{
 			return DelimitedWithQuotedStrings(",", newLine);
 		}
 		
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns></returns>
 		public static dynamic Csv()
 		{
 			return Csv(Environment.NewLine);
 		}
 		
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="newLine"></param>
+		/// <returns></returns>
 		public static dynamic Csv(string newLine)
 		{
 			return Csv(newLine, new BasicDelimitedParseStrategy());
 		}
 		
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="newLine"></param>
+		/// <param name="parseStrategy"></param>
+		/// <returns></returns>
 		public static dynamic Csv(string newLine, IDelimitedParseStrategy parseStrategy)
 		{
 			return Delimited(",", newLine, parseStrategy);
 		}
 		
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="delimiter"></param>
+		/// <returns></returns>
 		public static dynamic Delimited(string delimiter)
 		{
 			return Delimited(delimiter, Environment.NewLine);
 		}
 		
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="delimiter"></param>
+		/// <param name="newLine"></param>
+		/// <returns></returns>
 		public static dynamic Delimited(string delimiter, string newLine)
 		{
 			return Delimited(delimiter, newLine, new BasicDelimitedParseStrategy());
 		}
 		
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="delimiter"></param>
+		/// <returns></returns>
 		public static dynamic DelimitedWithQuotedStrings(string delimiter)
 		{
 			return DelimitedWithQuotedStrings(delimiter, Environment.NewLine);
 		}
 		
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="delimiter"></param>
+		/// <param name="newLine"></param>
+		/// <returns></returns>
 		public static dynamic DelimitedWithQuotedStrings(string delimiter, string newLine)
 		{
 			return Delimited(delimiter, newLine, new QuotedStringParseStrategy());
 		}
 		
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="delimiter"></param>
+		/// <param name="newLine"></param>
+		/// <param name="parseStrategy"></param>
+		/// <returns></returns>
 		public static dynamic Delimited(string delimiter, string newLine, IDelimitedParseStrategy parseStrategy) {
 			
 			return new Parser(new DelimitedRecordReader(delimiter, newLine, parseStrategy));
 		}
 		
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns></returns>
 		public static dynamic Fixed()
 		{
 			return Fixed(Environment.NewLine);
 		}
 		
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="newLine"></param>
+		/// <returns></returns>
 		public static dynamic Fixed(string newLine)
 		{
 			return new Parser(new FixedRecordReader(newLine));
